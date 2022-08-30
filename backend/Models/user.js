@@ -1,7 +1,6 @@
 const { Schema, model } = require('mongoose');
 const bcrypt = require('bcrypt');
 
-// import schema from Game.js
 const gameSchema = require('./game');
 
 const userSchema = new Schema(
@@ -23,10 +22,30 @@ const userSchema = new Schema(
     },
     savedGames: [gameSchema],
   },
-  // set this to use virtual below
   {
     toJSON: {
       virtuals: true,
     },
   }
 );
+
+userSchema.pre('save', async function (next) {
+  if (this.isNew || this.isModified('password')) {
+    const saltRounds = 10;
+    this.password = await bcrypt.hash(this.password, saltRounds);
+  }
+
+  next();
+});
+
+userSchema.methods.isCorrectPassword = async function (password) {
+  return bcrypt.compare(password, this.password);
+};
+
+userSchema.virtual('gameCount').get(function () {
+  return this.savedGames.length;
+});
+
+const User = model('User', userSchema);
+
+module.exports = User;
