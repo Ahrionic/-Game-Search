@@ -2,7 +2,7 @@ const { Schema } = require('mongoose');
 
 
 const gameSchema = new Schema({
-  publisher: [
+  creator: [
     {
       type: String,
     },
