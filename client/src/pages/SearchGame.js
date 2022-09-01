@@ -23,18 +23,25 @@ const options = {
   }
 }
 
+// var games = [];
+
 const SearchGame = () => {
-  
+  // create state for holding returned api data
   const [searchedGames, setSearchedGames] = useState([]);
+  // create state for holding our search field data
   const [searchInput, setSearchInput] = useState('');
+
+  // create state to hold saved game id values
   const [savedGameIds, setSavedGameIds] = useState(getSavedGameIds());
 
-  const [saveGame, {error}] = useMutation(SAVE_GAME);
+  const [saveGame, { error }] = useMutation(SAVE_GAME);
 
-  useEffect(() =>{
+  // set up useEffect hook to save `gameIDs` list to localStorage on component unmount
+  useEffect(() => {
     return () => saveGameIds(savedGameIds);
-  })
+  });
 
+  // create method to search for games and set state on form submit
   const handleFormSubmit = async (event) => {
     event.preventDefault();
 
@@ -51,7 +58,7 @@ const SearchGame = () => {
       }
 
       const items = await games.json();
-
+   
       const gameData = items.map((game) => ({
         gameId: game.id,
         creator: game.developer || ['No developer'],
@@ -69,12 +76,14 @@ const SearchGame = () => {
   }
 
 
+  // create function to handle saving a game to our database
   const handleSaveGame = async (gameId) => {
     console.log(gameId)
     console.log(searchedGames)
-  
+    // find the book in `searchedGames` state by the matching id
     const gameToSave = searchedGames.find((game) => game.gameId === gameId);
 
+    // get token
     const token = Auth.loggedIn() ? Auth.getToken() : null;
 
     if (!token) {
@@ -139,7 +148,7 @@ const SearchGame = () => {
                 ) : null}
                 <Card.Body>
                   <Card.Title>{game.title}</Card.Title>
-                  <p className="small">Creators: {game.title}</p>
+                  <p className="small">Publisher: {game.creator}</p>
                   <Card.Text>{game.description}</Card.Text>
                   {Auth.loggedIn() && (
                     <Button

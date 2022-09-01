@@ -21,7 +21,7 @@ const SavedGame = () => {
   const userData = data?.me || {};
 
   const handleDeleteGame = async (gameId) => {
-   
+    
     const token = Auth.loggedIn() ? Auth.getToken() : null;
 
     if (!token) {
@@ -70,7 +70,7 @@ const SavedGame = () => {
                 ) : null}
                 <Card.Body>
                   <Card.Title>{game.title}</Card.Title>
-                  <p className="small">Creators: {game.creator}</p>
+                  <p className="small">Publisher: {game.creator}</p>
                   <Card.Text>{game.description}</Card.Text>
 
                   <Button
